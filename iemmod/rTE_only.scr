@@ -1,0 +1,50 @@
+#!/bin/bash
+# Computes the data shown in Figures 5.c) and 6.b) of the paper "Inversion of CSEM reflection responses" by Jürg Hunziker, Jan Thorbecke, Joeri Brackenhoff and Evert Slob.
+
+export `grep "IEMMODROOT=" ../Make_include`
+export PATH=$IEMMODROOT/bin:$PATH 
+
+path_out=rTE_only
+if [ ! -d $path_out ];
+then
+mkdir -p $path_out
+fi
+
+ascii2bin oneweight.txt 262144 oneweight.bin
+ascii2bin newmod_iso_xsize512_88.txt 262144 newmod_iso_xsize512_88.bin 
+iemmod \
+	freqvec=0.5 \
+	file_weight=oneweight.bin \
+	file_in=newmod_iso_xsize512_88.bin \
+	path_out=$path_out \
+	nx=512 \
+        ny=512 \
+	zsrc=200 \
+	zrcv=200 \
+	dx=80 \
+        dy=80 \
+        z=-1,0,200,1200,1220 \
+        known=1,1,0,0,0 \
+        econd=1,1,0.5,0.5,0.5 \
+        eperm=17,17,17,2.1,17 \
+        mperm=1,1,1,1,1 \
+	component=88 \
+        nd=1000 \
+        startlogx=-6 \
+        deltalogx=0.003125 \
+        nlogx=4096 \
+	kmax=0.628625 \
+	c1=-0.00083333 \
+	c2=-0.0029167 \
+	maxpt=5000 \
+        xdirect=1 \
+	whichstep=2 \
+	whichdir=1 \
+	eps=1e-7 \
+	maxit=500 \
+	restartgrad=5 \
+	ngradrestart=4 \
+	epsa=1e-5 \
+	maxita=20 \
+	maxnogood=5 \
+
